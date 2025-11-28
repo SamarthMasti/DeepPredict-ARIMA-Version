@@ -1,0 +1,17 @@
+import requests
+
+TOKEN = "apify_api_GH3QdCzB6OhUGkmKcq9qynFrDrGKDa30vl4D"  # keep it private
+url = "https://api.apify.com/v2/acts/apify~magicbricks-scraper/run-sync-get-dataset-items?token=apify_api_GH3QdCzB6OhUGkmKcq9qynFrDrGKDa30vl4D&limit=5"
+
+params = {
+    "token": TOKEN,
+    "limit": 5   # number of listings
+}
+
+response = requests.get(url, params=params)
+if response.ok:
+    data = response.json()
+    for item in data:
+        print(item.get("title"), "-", item.get("price"), "-", item.get("locality"))
+else:
+    print("Error:", response.text)

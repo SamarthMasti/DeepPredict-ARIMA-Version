@@ -2,86 +2,113 @@
 <html>
 <head>
     <title>Bangalore Home Price Prediction</title>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="app.js"></script>
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="app.css" />
 </head>
 <body>
+  <div class="container">
 
-<div class="img"></div>
+    <header class="header">
+      <h1>DeepPredict — Bangalore Home Price</h1>
+      <p class="subtitle">Property-level estimate + market forecast & risk prescription</p>
+    </header>
 
-<form class="form">
+    <main class="card">
+      <section class="inputs">
+        <label>Area (Square Feet)</label>
+        <input id="uiSqft" type="number" min="100" value="1000" />
 
-    <!-- AREA -->
-    <h2>Area (Square Feet)</h2>
-    <input class="area" type="number" id="uiSqft" name="Squareft" value="1000" min="100">
+        <label>BHK</label>
+        <div class="radio-row">
+          <label><input type="radio" name="uiBHK" value="1">1</label>
+          <label><input type="radio" name="uiBHK" value="2" checked>2</label>
+          <label><input type="radio" name="uiBHK" value="3">3</label>
+          <label><input type="radio" name="uiBHK" value="4">4</label>
+          <label><input type="radio" name="uiBHK" value="5">5</label>
+        </div>
 
-    <!-- BHK -->
-    <h2>BHK</h2>
-    <div class="switch-field">
-        <input type="radio" id="radio-bhk-1" name="uiBHK" value="1">
-        <label for="radio-bhk-1">1</label>
+        <label>Bath</label>
+        <div class="radio-row">
+          <label><input type="radio" name="uiBathrooms" value="1">1</label>
+          <label><input type="radio" name="uiBathrooms" value="2" checked>2</label>
+          <label><input type="radio" name="uiBathrooms" value="3">3</label>
+          <label><input type="radio" name="uiBathrooms" value="4">4</label>
+          <label><input type="radio" name="uiBathrooms" value="5">5</label>
+        </div>
 
-        <input type="radio" id="radio-bhk-2" name="uiBHK" value="2" checked>
-        <label for="radio-bhk-2">2</label>
-
-        <input type="radio" id="radio-bhk-3" name="uiBHK" value="3">
-        <label for="radio-bhk-3">3</label>
-
-        <input type="radio" id="radio-bhk-4" name="uiBHK" value="4">
-        <label for="radio-bhk-4">4</label>
-
-        <input type="radio" id="radio-bhk-5" name="uiBHK" value="5">
-        <label for="radio-bhk-5">5</label>
-    </div>
-
-    <!-- BATH -->
-    <h2>Bath</h2>
-    <div class="switch-field">
-        <input type="radio" id="radio-bath-1" name="uiBathrooms" value="1">
-        <label for="radio-bath-1">1</label>
-
-        <input type="radio" id="radio-bath-2" name="uiBathrooms" value="2" checked>
-        <label for="radio-bath-2">2</label>
-
-        <input type="radio" id="radio-bath-3" name="uiBathrooms" value="3">
-        <label for="radio-bath-3">3</label>
-
-        <input type="radio" id="radio-bath-4" name="uiBathrooms" value="4">
-        <label for="radio-bath-4">4</label>
-
-        <input type="radio" id="radio-bath-5" name="uiBathrooms" value="5">
-        <label for="radio-bath-5">5</label>
-    </div>
-
-    <!-- LOCATION -->
-    <h2>Location</h2>
-    <div>
-        <select class="location" id="uiLocations">
-            <option value="" disabled selected>Choose a Location</option>
-            <option>Electronic City</option>
-            <option>Rajaji Nagar</option>
-            <option>Whitefield</option>
-            <option>Indira Nagar</option>
+        <label>Location</label>
+        <select id="uiLocations">
+            <option value="" disabled selected>Loading locations...</option>
         </select>
-    </div>
 
-    <!-- FORECAST HORIZON -->
-    <h2>Forecast Horizon (Months)</h2>
-    <input type="number" id="uiHorizon" class="form-control" value="6" min="1" max="24">
+        <label>Forecast Horizon (months)</label>
+        <input id="uiHorizon" type="number" min="1" max="60" value="12" />
 
-    <!-- SUBMIT BUTTON -->
-    <button class="submit" onclick="onClickedEstimatePrice()" type="button">
-        Estimate Price
-    </button>
+        <div class="buttons-row">
+          <button id="estimateBtn" type="button">Estimate & Forecast</button>
+          <button id="resetBtn" type="button" class="ghost">Reset</button>
+        </div>
 
-    <!-- RESULT AREA -->
-    <div id="uiEstimatedPrice" class="result">
-        <h2></h2>
-    </div>
+        <hr/>
 
-</form>
+        <label>Quick Sentiment (paste headline/text)</label>
+        <textarea id="userText" placeholder="Enter any real estate news..." rows="3"></textarea>
+        <div class="buttons-row">
+          <button id="analyzeBtn" type="button">Analyze</button>
+          <div id="sentimentResult" class="sentiment-inline">—</div>
+        </div>
+      </section>
 
+      <section class="results">
+        <div class="result-card">
+          <h3>Current Price</h3>
+          <div id="uiEstimatedCurrent" class="big-value">—</div>
+        </div>
+
+        <div class="result-card">
+          <h3>Forecasted Price</h3>
+          <div id="uiEstimatedFuture" class="big-value">—</div>
+        </div>
+
+        <div class="result-card risk-card">
+          <h3>Risk & Prescription</h3>
+          <div class="risk-row">
+            <div>Risk Level: <span id="riskLevel" class="pill">—</span></div>
+            <div>Composite Score: <span id="compositeScore">—</span></div>
+          </div>
+          <div class="risk-details">
+            <p><b>Category:</b> <span id="riskCategory">—</span></p>
+            <p id="riskMsg">—</p>
+            <p><b>Recommendation:</b> <span id="prescription">—</span></p>
+            <p id="prescriptionExplain" class="muted">—</p>
+          </div>
+        </div>
+
+        <div class="result-card sentiment-card">
+          <h3>Market Sentiment</h3>
+          <div class="sentiment-gauge-wrap">
+            <div class="gauge-outer">
+              <div class="gauge-inner" id="sentimentGauge"></div>
+              <div class="gauge-pointer" id="gaugePointer"></div>
+            </div>
+            <div class="sentiment-info">
+              <div id="sentimentText" class="sentiment-text">—</div>
+              <div id="sentimentScore" class="sentiment-score">Score: —</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <footer class="footer">
+      <small>Make sure Flask backend is running at <code>http://127.0.0.1:5000</code></small>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
